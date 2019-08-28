@@ -1,16 +1,18 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { FaGithubAlt, FaPlus, FaSpinner } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus } from 'react-icons/fa';
 
 import Container from '../../components/Container';
 import { Form, SubmitButton, List } from './styles';
 import api from '../../services/api';
+import Loader from '../../components/Loader';
 
 class Main extends Component {
   state = {
     newRepo: '',
     repositories: [],
-    loading: 0,
+    loading: false,
+    error: false,
   };
 
   componentDidMount() {
@@ -35,24 +37,34 @@ class Main extends Component {
   handleSubmit = async e => {
     e.preventDefault();
 
-    this.setState({ loading: 1 });
+    try {
+      const { newRepo, repositories } = this.state;
 
-    const { newRepo, repositories } = this.state;
-    const response = await api.get(`/repos/${newRepo}`);
+      if (repositories.find(repo => repo.name === newRepo)) {
+        throw new Error('O repositório já está listado');
+      }
 
-    const data = {
-      name: response.data.full_name,
-    };
+      this.setState({ loading: true });
 
-    this.setState({
-      repositories: [...repositories, data],
-      newRepo: '',
-      loading: 0,
-    });
+      const response = await api.get(`/repos/${newRepo}`);
+
+      const data = {
+        name: response.data.full_name,
+      };
+
+      this.setState({
+        repositories: [...repositories, data],
+        newRepo: '',
+        loading: false,
+        error: false,
+      });
+    } catch (err) {
+      this.setState({ loading: false, error: true });
+    }
   };
 
   render() {
-    const { newRepo, repositories, loading } = this.state;
+    const { newRepo, repositories, loading, error } = this.state;
 
     return (
       <Container>
@@ -61,7 +73,7 @@ class Main extends Component {
           Repositórios
         </h1>
 
-        <Form onSubmit={this.handleSubmit}>
+        <Form onSubmit={this.handleSubmit} error={error}>
           <input
             type="text"
             placeholder="Adicionar repositório"
@@ -70,11 +82,7 @@ class Main extends Component {
           />
 
           <SubmitButton loading={loading}>
-            {loading ? (
-              <FaSpinner color="#fff" size={14} />
-            ) : (
-              <FaPlus color="#fff" size={14} />
-            )}
+            {loading ? <Loader size={14} /> : <FaPlus color="#fff" size={14} />}
           </SubmitButton>
         </Form>
 

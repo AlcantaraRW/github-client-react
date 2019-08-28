@@ -1,13 +1,9 @@
 import styled from 'styled-components';
 
-export const Loading = styled.div`
-  color: #fff;
-  font-size: 30px;
-  font-weight: bold;
+export const LoaderContainer = styled.div`
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  margin: 110px;
 `;
 
 export const Owner = styled.header`

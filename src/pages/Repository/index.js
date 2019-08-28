@@ -3,8 +3,9 @@ import PropTypes from 'prop-types';
 import { Link } from 'react-router-dom';
 
 import api from '../../services/api';
-import { Loading, Owner, IssueList } from './styles';
+import { LoaderContainer, Owner, IssueList } from './styles';
 import Container from '../../components/Container';
+import Loader from '../../components/Loader';
 
 class Repository extends Component {
   static propTypes = {
@@ -47,7 +48,11 @@ class Repository extends Component {
     const { repository, issues, loading } = this.state;
 
     if (loading) {
-      return <Loading>Carregando...</Loading>;
+      return (
+        <LoaderContainer>
+          <Loader size={30} />
+        </LoaderContainer>
+      );
     }
 
     return (
