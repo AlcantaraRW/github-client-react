@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import { FaGithubAlt, FaPlus } from 'react-icons/fa';
+import { FaGithubAlt, FaPlus, FaTrashAlt, FaInfoCircle } from 'react-icons/fa';
 
 import Container from '../../components/Container';
-import { Form, SubmitButton, List } from './styles';
+import { Form, SubmitButton, List, IconsContainer } from './styles';
 import api from '../../services/api';
 import Loader from '../../components/Loader';
 
@@ -63,6 +63,12 @@ class Main extends Component {
     }
   };
 
+  handleDelete = repo => {
+    const { repositories } = this.state;
+
+    this.setState({ repositories: repositories.filter(r => r !== repo) });
+  };
+
   render() {
     const { newRepo, repositories, loading, error } = this.state;
 
@@ -90,9 +96,12 @@ class Main extends Component {
           {repositories.map(repo => (
             <li key={repo.name}>
               <span>{repo.name}</span>
-              <Link to={`/repository/${encodeURIComponent(repo.name)}`}>
-                Detalhes
-              </Link>
+              <IconsContainer>
+                <Link to={`/repository/${encodeURIComponent(repo.name)}`}>
+                  <FaInfoCircle size={16} />
+                </Link>
+                <FaTrashAlt size={16} onClick={() => this.handleDelete(repo)} />
+              </IconsContainer>
             </li>
           ))}
         </List>

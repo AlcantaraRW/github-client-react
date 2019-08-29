@@ -55,3 +55,13 @@ export const List = styled.ul`
     }
   }
 `;
+
+export const IconsContainer = styled.div`
+  display: flex;
+
+  svg {
+    margin-left: 12px;
+    color: #7159c1;
+    cursor: pointer;
+  }
+`;
